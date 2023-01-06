@@ -4,12 +4,16 @@ namespace WebAPI_Levinci.Models
 {
     public class LevinciContext : DbContext
     {
-        public DbSet<Users> users { get; set; }
+        public LevinciContext(DbContextOptions<LevinciContext> options) : base(options)
+        { 
+
+        }
 
         public const string strConnectString = @"Data Source=TUANIT\SQLEXPRESS;Initial Catalog=LevinciDB;Integrated Security=True;Encrypt=True;TrustServerCertificate=True;";
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            base.OnConfiguring(optionsBuilder);
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer(strConnectString);
@@ -20,5 +24,7 @@ namespace WebAPI_Levinci.Models
         {
 
         }
+
+        public DbSet<Users> users { get; set; }
     }
 }
