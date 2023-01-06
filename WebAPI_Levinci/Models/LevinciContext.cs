@@ -22,7 +22,7 @@ namespace WebAPI_Levinci.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            
         }
 
         public DbSet<Users> users { get; set; }

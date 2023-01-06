@@ -15,7 +15,7 @@ namespace WebAPI_Levinci.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<ActionResult<ServiceResponse<List<Users>>>> GetAllUsers()
         {
             return Ok(await _userService.GetAllUsers());
@@ -27,7 +27,7 @@ namespace WebAPI_Levinci.Controllers
             return Ok(await _userService.GetSingleUser(strID));
         }
 
-        [HttpPost]
+        [HttpPost("Add")]
         public async Task<ActionResult<ServiceResponse<List<Users>>>> AddUser(Users user)
         {
             //var result = _userService.AddUser(user);
@@ -35,13 +35,13 @@ namespace WebAPI_Levinci.Controllers
             return Ok(await _userService.AddUser(user));
         }
 
-        [HttpPut("strID")]
+        [HttpPut("{strID}")]
         public async Task<ActionResult<List<Users>>> UpdateUser(string strID, Users request)
         {
             return Ok(await _userService.UpdateUser(strID, request));
         }
 
-        [HttpDelete("strID")]
+        [HttpDelete("{strID}")]
         public async Task<ActionResult<List<Users>>> DeleteUser(string strID)
         {
             return Ok(await _userService.DeleteUser(strID));
