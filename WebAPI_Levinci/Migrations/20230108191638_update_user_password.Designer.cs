@@ -11,8 +11,8 @@ using WebAPI_Levinci.Models;
 namespace WebAPILevinci.Migrations
 {
     [DbContext(typeof(LevinciContext))]
-    [Migration("20230106225223_delete_passhash")]
-    partial class deletepasshash
+    [Migration("20230108191638_update_user_password")]
+    partial class updateuserpassword
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,16 @@ namespace WebAPILevinci.Migrations
                         .HasColumnName("ID")
                         .HasColumnOrder(0);
 
+                    b.Property<byte[]>("bPasswordHash")
+                        .HasColumnType("varbinary")
+                        .HasColumnName("PasswordHash")
+                        .HasColumnOrder(6);
+
+                    b.Property<byte[]>("bPasswordSalt")
+                        .HasColumnType("varbinary")
+                        .HasColumnName("PasswordSalt")
+                        .HasColumnOrder(7);
+
                     b.Property<string>("strEmail")
                         .HasMaxLength(100)
                         .HasColumnType("varchar")
@@ -43,12 +53,6 @@ namespace WebAPILevinci.Migrations
                         .HasColumnType("varchar")
                         .HasColumnName("Name")
                         .HasColumnOrder(3);
-
-                    b.Property<string>("strPassword")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar")
-                        .HasColumnName("Password")
-                        .HasColumnOrder(2);
 
                     b.Property<string>("strRole")
                         .HasMaxLength(100)

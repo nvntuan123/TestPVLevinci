@@ -26,17 +26,6 @@ namespace WebAPI_Levinci.Models
             set { _strUserName = value; }
         }
 
-        private string? _strPassword;
-
-        [Column("Password", Order = 2, TypeName = "varchar")]
-        [MaxLength(100)]
-        public string? strPassword
-        {
-            get { return _strPassword; }
-            set { _strPassword = value; }
-        }
-
-
         private string? _strName;
 
         [Column("Name", Order = 3, TypeName = "varchar")]
@@ -65,6 +54,24 @@ namespace WebAPI_Levinci.Models
         {
             get { return _strEmail; }
             set { _strEmail = value; }
+        }
+
+        private byte[]? _bPasswordHash;
+
+        [Column("PasswordHash", Order = 6, TypeName = "varbinary(max)")]
+        public byte[]? bPasswordHash
+        {
+            get { return _bPasswordHash; }
+            set { _bPasswordHash = value; }
+        }
+
+        private byte[]? _bPasswordSalt;
+
+        [Column("PasswordSalt", Order = 7, TypeName = "varbinary(max)")]
+        public byte[]? bPasswordSalt
+        {
+            get { return _bPasswordSalt; }
+            set { _bPasswordSalt = value; }
         }
     }
 }

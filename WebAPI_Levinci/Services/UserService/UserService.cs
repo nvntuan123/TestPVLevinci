@@ -1,64 +1,49 @@
 ﻿using WebAPI_Levinci.Models;
 using Microsoft.EntityFrameworkCore;
 using Azure.Core;
+using WebAPI_Levinci.Dtos;
+using AutoMapper;
 
 namespace WebAPI_Levinci.Services.UserService
 {
     public class UserService : IUserService
     {
         private LevinciContext _levinciContext;
-        private static List<Users> lstUser = new List<Users>
-        {
-            new Users
-            {
-                strID = "1",
-                strUserName = "nvntuan",
-                strPassword = "123",
-                strName = "Nhat Tuan",
-                strRole = "Admin",
-                strEmail = "nvntuan123@gmail.com"
-            },
-            new Users
-            {
-                strID = "2",
-                strUserName = "nvh",
-                strPassword = "456",
-                strName = "Hung",
-                strRole = "User",
-                strEmail = "nvhun123@gmail.com"
-            }
-        };
+        private readonly IMapper _mapper;
 
-        public UserService(LevinciContext levinciContext)
+        public UserService(IMapper mapper, LevinciContext levinciContext)
         {
+            _mapper = mapper;
             _levinciContext = levinciContext;
         }
 
-        public async Task<ServiceResponse<List<Users>>> GetAllUsers()
+        public async Task<ServiceResponse<List<GetUserDto>>> GetAllUsers()
         {
-            var serviceResponse = new ServiceResponse<List<Users>>();
-            //serviceResponse.Data = lstUser;
-            serviceResponse.Data = await _levinciContext.users.ToListAsync();
+            var serviceResponse = new ServiceResponse<List<GetUserDto>>();
+            var lstUser = await _levinciContext.users.ToListAsync();
+            serviceResponse.Data = lstUser.Select(u => _mapper.Map<GetUserDto>(u)).ToList();
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<Users>> GetSingleUser(string strID)
+        public async Task<ServiceResponse<GetUserDto>> GetSingleUser(string strID)
         {
-            var serviceResponse = new ServiceResponse<Users>();
-            //Users? user = lstUser.FirstOrDefault(x => x.strID == strID);
-            Users? user = await _levinciContext.users.FirstOrDefaultAsync(x => x.strID == strID);
-            serviceResponse.Data = user;
+            var serviceResponse = new ServiceResponse<GetUserDto>();
+            var lstUser = await _levinciContext.users.FirstOrDefaultAsync(u => u.strID == strID);
+            serviceResponse.Data = _mapper.Map<GetUserDto>(lstUser);
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<Users>>> AddUser(Users user)
+        public async Task<ServiceResponse<List<GetUserDto>>> AddUser(AddUserDto newUser)
         {
-            var serviceResponse = new ServiceResponse<List<Users>>();
+            var serviceResponse = new ServiceResponse<List<GetUserDto>>();
             try
             {
-                await _levinciContext.users.AddAsync(user);
+                var user = _mapper.Map<Users>(newUser);
+
+                _levinciContext.users.Add(user);
                 await _levinciContext.SaveChangesAsync();
-                serviceResponse.Data = await _levinciContext.users.ToListAsync();
+
+                serviceResponse.Data = await _levinciContext.users.Select(u => _mapper.Map<GetUserDto>(u)).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -68,21 +53,25 @@ namespace WebAPI_Levinci.Services.UserService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<Users>>> UpdateUser(string strID, Users request)
+        public async Task<ServiceResponse<GetUserDto>> UpdateUser(UpdateUserDto request)
         {
-            var serviceResponse = new ServiceResponse<List<Users>>();
+            var serviceResponse = new ServiceResponse<GetUserDto>();
             try
             {
-                var user = await _levinciContext.users.FirstOrDefaultAsync(x => x.strID == strID);
+                var user = await _levinciContext.users.FirstOrDefaultAsync(u => u.strID == request.strID);
+                if (user is null)
+                {
+                    throw new Exception($"User with ID '{request.strID}' not found.");
+                }
+
                 user.strUserName = request.strUserName;
-                user.strPassword = request.strPassword;
                 user.strName = request.strName;
                 user.strRole = request.strRole;
                 user.strEmail = request.strEmail;
 
                 await _levinciContext.SaveChangesAsync();
 
-                serviceResponse.Data = await _levinciContext.users.ToListAsync();
+                serviceResponse.Data = _mapper.Map<GetUserDto>(user);
             }
             catch (Exception ex)
             {
@@ -92,18 +81,21 @@ namespace WebAPI_Levinci.Services.UserService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<Users>>> DeleteUser(string strID)
+        public async Task<ServiceResponse<List<GetUserDto>>> DeleteUser(string strID)
         {
-            var serviceResponse = new ServiceResponse<List<Users>>();
+            var serviceResponse = new ServiceResponse<List<GetUserDto>>();
             try
             {
-                Users? user = await _levinciContext.users.FirstOrDefaultAsync(x => x.strID == strID);
-                
-                _levinciContext.users.Remove(user);
+                var user = await _levinciContext.users.FirstOrDefaultAsync(u => u.strID == strID);
+                if (user is null)
+                {
+                    throw new Exception($"User with ID '{strID}' not found.");
+                }
 
+                _levinciContext.users.Remove(user);
                 await _levinciContext.SaveChangesAsync();
 
-                serviceResponse.Data = await _levinciContext.users.ToListAsync();
+                serviceResponse.Data = await _levinciContext.users.Select(u => _mapper.Map<GetUserDto>(u)).ToListAsync();
             }
             catch (Exception ex)
             {

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebAPI_Levinci.Models;
 
@@ -10,9 +11,11 @@ using WebAPI_Levinci.Models;
 namespace WebAPILevinci.Migrations
 {
     [DbContext(typeof(LevinciContext))]
-    partial class LevinciContextModelSnapshot : ModelSnapshot
+    [Migration("20230108235349_update_user_varbinarymax")]
+    partial class updateuservarbinarymax
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

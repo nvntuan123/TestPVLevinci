@@ -9,15 +9,9 @@ namespace WebAPI_Levinci.Models
 
         }
 
-        public const string strConnectString = @"Data Source=TUANIT\SQLEXPRESS;Initial Catalog=LevinciDB;Integrated Security=True;Encrypt=True;TrustServerCertificate=True;";
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer(strConnectString);
-            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

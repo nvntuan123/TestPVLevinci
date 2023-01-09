@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI_Levinci.Dtos;
 using WebAPI_Levinci.Models;
 using WebAPI_Levinci.Services.UserService;
 
@@ -16,33 +17,33 @@ namespace WebAPI_Levinci.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<ServiceResponse<List<Users>>>> GetAllUsers()
+        public async Task<ActionResult<ServiceResponse<List<GetUserDto>>>> GetAllUsers()
         {
             return Ok(await _userService.GetAllUsers());
         }
 
-        [HttpGet("{strID}")]
-        public async Task<ActionResult<ServiceResponse<Users>>> GetSingleUser(string strID)
+        [HttpGet("GetSingleUser")]
+        public async Task<ActionResult<ServiceResponse<GetUserDto>>> GetSingleUser(string strID)
         {
             return Ok(await _userService.GetSingleUser(strID));
         }
 
         [HttpPost("Add")]
-        public async Task<ActionResult<ServiceResponse<List<Users>>>> AddUser(Users user)
+        public async Task<ActionResult<ServiceResponse<List<GetUserDto>>>> AddUser(AddUserDto user)
         {
             //var result = _userService.AddUser(user);
             //return Ok(result);
             return Ok(await _userService.AddUser(user));
         }
 
-        [HttpPut("{strID}")]
-        public async Task<ActionResult<List<Users>>> UpdateUser(string strID, Users request)
+        [HttpPut("Edit")]
+        public async Task<ActionResult<List<GetUserDto>>> UpdateUser(UpdateUserDto request)
         {
-            return Ok(await _userService.UpdateUser(strID, request));
+            return Ok(await _userService.UpdateUser(request));
         }
 
-        [HttpDelete("{strID}")]
-        public async Task<ActionResult<List<Users>>> DeleteUser(string strID)
+        [HttpDelete("Delete")]
+        public async Task<ActionResult<List<GetUserDto>>> DeleteUser(string strID)
         {
             return Ok(await _userService.DeleteUser(strID));
         }

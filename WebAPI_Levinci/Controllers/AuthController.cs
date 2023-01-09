@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI_Levinci.Data;
+using WebAPI_Levinci.Dtos;
+using WebAPI_Levinci.Models;
 
 namespace WebAPI_Levinci.Controllers
 {
@@ -15,31 +17,50 @@ namespace WebAPI_Levinci.Controllers
             _authenRepository = authenRepository;
         }
 
-        [HttpPost("strUserName")]
-        public async Task<ActionResult<ServiceResponse<bool>>> Exists(string? strUserName)
+        [HttpPost("Register")]
+        public async Task<ActionResult<ServiceResponse<string?>>> Register(LoginDto loginDto)
         {
-            bool? response = await _authenRepository.UserExists(strUserName);
-            if (!response.Value)
+            if (loginDto is null)
+            {
+                throw new ArgumentNullException(nameof(loginDto));
+            }
+
+            var response = await _authenRepository.Register(
+                new Users { strUserName = loginDto.strUserName },
+                loginDto.strPassword
+                );
+            if (!response.bSuccess)
             {
                 return BadRequest(response);
             }
             return Ok(response);
         }
 
-        [HttpPost("strUserName, strPassword")]
-        public async Task<ActionResult<ServiceResponse<bool>>> Login(string? strUserName, string? strPassword)
+        //[HttpPost("ExistsUser")]
+        //public async Task<ActionResult<ServiceResponse<bool>>> Exists(string? strUserName)
+        //{
+        //    bool? response = await _authenRepository.UserExists(strUserName);
+        //    if (!response.Value)
+        //    {
+        //        return BadRequest(response);
+        //    }
+        //    return Ok(response);
+        //}
+
+        [HttpPost("Login")]
+        public async Task<ActionResult<ServiceResponse<bool>>> Login(LoginDto loginDto)
         {
-            var response = await _authenRepository.Login(strUserName, strPassword);
+            var response = await _authenRepository.Login(loginDto.strUserName, loginDto.strPassword);
             if (!response.bSuccess)
             {
                 return BadRequest(response);
             }
 
-            if (response.Data.strRole == "Admin") // Send Email
+            if (response.Data!.strRole == "Admin") // Send Email
             {
 
             }
             return Ok(response);
-        }
+        }        
     }
 }
