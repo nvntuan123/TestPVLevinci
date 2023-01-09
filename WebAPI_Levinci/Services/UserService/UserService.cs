@@ -40,6 +40,12 @@ namespace WebAPI_Levinci.Services.UserService
             {
                 var user = _mapper.Map<Users>(newUser);
 
+                // Password -> Hash, Salt
+                CreatePasswordHash(strPassword: newUser.strPassword, strPasswordHash: out byte[]? strPasswordHash, strPasswordSalt: out byte[]? strtPasswordSalt);
+
+                user.bPasswordHash = strPasswordHash;
+                user.bPasswordSalt = strtPasswordSalt;
+
                 _levinciContext.users.Add(user);
                 await _levinciContext.SaveChangesAsync();
 
@@ -51,6 +57,15 @@ namespace WebAPI_Levinci.Services.UserService
                 serviceResponse.bSuccess = false;
             }
             return serviceResponse;
+        }
+
+        private void CreatePasswordHash(string? strPassword, out byte[]? strPasswordHash, out byte[]? strPasswordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                strPasswordSalt = hmac.Key;
+                strPasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(strPassword!));
+            }
         }
 
         public async Task<ServiceResponse<GetUserDto>> UpdateUser(UpdateUserDto request)
@@ -69,6 +84,13 @@ namespace WebAPI_Levinci.Services.UserService
                 user.strRole = request.strRole;
                 user.strEmail = request.strEmail;
 
+                // Password -> Hash, Salt
+                CreatePasswordHash(strPassword: request.strPassword, strPasswordHash: out byte[]? strPasswordHash, strPasswordSalt: out byte[]? strtPasswordSalt);
+
+                user.bPasswordHash = strPasswordHash;
+                user.bPasswordSalt = strtPasswordSalt;
+
+                //_levinciContext.users.Update(user);
                 await _levinciContext.SaveChangesAsync();
 
                 serviceResponse.Data = _mapper.Map<GetUserDto>(user);

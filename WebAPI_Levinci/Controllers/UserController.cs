@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI_Levinci.Dtos;
 using WebAPI_Levinci.Models;
@@ -6,6 +7,7 @@ using WebAPI_Levinci.Services.UserService;
 
 namespace WebAPI_Levinci.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -16,6 +18,7 @@ namespace WebAPI_Levinci.Controllers
             _userService = userService;
         }
 
+        //[AllowAnonymous]
         [HttpGet("GetAll")]
         public async Task<ActionResult<ServiceResponse<List<GetUserDto>>>> GetAllUsers()
         {

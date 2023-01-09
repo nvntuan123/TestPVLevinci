@@ -36,17 +36,6 @@ namespace WebAPI_Levinci.Controllers
             return Ok(response);
         }
 
-        //[HttpPost("ExistsUser")]
-        //public async Task<ActionResult<ServiceResponse<bool>>> Exists(string? strUserName)
-        //{
-        //    bool? response = await _authenRepository.UserExists(strUserName);
-        //    if (!response.Value)
-        //    {
-        //        return BadRequest(response);
-        //    }
-        //    return Ok(response);
-        //}
-
         [HttpPost("Login")]
         public async Task<ActionResult<ServiceResponse<bool>>> Login(LoginDto loginDto)
         {
@@ -58,9 +47,9 @@ namespace WebAPI_Levinci.Controllers
 
             if (response.Data!.strRole == "Admin") // Send Email
             {
-
+                return Ok(response);
             }
-            return Ok(response);
+            return new JsonResult(response);
         }        
     }
 }
